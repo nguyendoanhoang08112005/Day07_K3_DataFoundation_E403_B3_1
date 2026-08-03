@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VinUni Academic RAG Assistant — Lab 7 Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-decor">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-logo">V</div>
+                <div class="brand-info">
+                    <h1>VinUni RAG</h1>
+                    <span class="badge">Group B3_1 - Lab 7</span>
+                </div>
+            </div>
+
+            <div class="section-title">Cấu hình hệ thống</div>
+
+            <div class="config-group">
+                <label for="strategy-select">Chiến lược Chunking</label>
+                <select id="strategy-select" class="select-input">
+                    <option value="recursive">Nguyễn Doãn Hoàng (Recursive Chunker - 400 chars)</option>
+                    <option value="custom">Phạm Hà Linh (Custom Heading Chunker - 500 chars)</option>
+                    <option value="fixed_size">Đinh Quốc Trung (FixedSize Chunker - 500/50)</option>
+                    <option value="sentence">Trần Chí Tâm (Sentence Chunker - 3 sentences)</option>
+                </select>
+                <div class="help-text">Chọn thuật toán phân tách dữ liệu của từng thành viên.</div>
+            </div>
+
+            <div class="config-group">
+                <label for="embedder-info">Mô hình Embedding</label>
+                <input type="text" id="embedder-info" class="text-input" readonly value="Multilingual-E5-Base (Local)">
+            </div>
+
+            <div class="section-title">Lọc siêu dữ liệu (Metadata)</div>
+            
+            <div class="config-group checkbox-group">
+                <input type="checkbox" id="filter-audience" class="checkbox-input">
+                <label for="filter-audience">Chỉ lọc tài liệu cho Sinh viên (audience: student)</label>
+            </div>
+            
+            <div class="config-group select-group">
+                <label for="filter-dept">Lọc theo phòng ban (department)</label>
+                <select id="filter-dept" class="select-input">
+                    <option value="none">-- Không lọc --</option>
+                    <option value="academic-affairs">Phòng Học vụ (academic-affairs)</option>
+                    <option value="financial-aid">Phòng Tài chính (financial-aid)</option>
+                    <option value="library">Thư viện (library)</option>
+                    <option value="student-affairs">Phòng Công tác Sinh viên (student-affairs)</option>
+                </select>
+            </div>
+
+            <div class="section-title">Thành viên nhóm</div>
+            <div class="team-list">
+                <div class="team-member">
+                    <div class="member-avatar">A</div>
+                    <div class="member-details">
+                        <span class="member-name">Nguyễn Doãn Hoàng</span>
+                        <span class="member-role">Leader & QA</span>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar">B</div>
+                    <div class="member-details">
+                        <span class="member-name">Trần Chí Tâm</span>
+                        <span class="member-role">Thủ kho Dữ liệu</span>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar">C</div>
+                    <div class="member-details">
+                        <span class="member-name">Đinh Quốc Trung</span>
+                        <span class="member-role">Người ra đề</span>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar">D</div>
+                    <div class="member-details">
+                        <span class="member-name">Phạm Hà Linh</span>
+                        <span class="member-role">Kỹ sư thuật toán</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-area">
+            <header class="chat-header">
+                <div class="header-title">
+                    <h2>Trò chuyện với RAG Agent</h2>
+                    <p class="status"><span class="status-dot"></span> Đang chạy (Local E5 Multilingual)</p>
+                </div>
+                <button id="clear-chat" class="btn-secondary">Xóa hội thoại</button>
+            </header>
+
+            <div class="chat-messages" id="chat-messages">
+                <div class="message assistant welcome">
+                    <div class="message-content">
+                        Xin chào! Tôi là trợ lý học vụ thông minh của VinUniversity. Bạn có câu hỏi nào về quy chế đăng ký học phần, chính sách học bổng, hỗ trợ tài chính, mượn sách thư viện hoặc ký túc xá không?
+                        <br><br>
+                        <strong>Một số câu gợi ý từ bộ benchmark của nhóm:</strong>
+                        <ul class="suggestions">
+                            <li class="suggestion-item">Khi đăng ký môn trên SIS, trạng thái nào xác nhận đăng ký thành công, và hệ thống xử lý thế nào nếu sinh viên chưa đủ điều kiện tiên quyết hoặc chọn hai môn trùng lịch?</li>
+                            <li class="suggestion-item" data-filter="student">Học bổng theo thành tích của VinUniversity dành cho đối tượng nào và bốn loại học bổng chính có mức hỗ trợ ra sao? (Bật lọc student)</li>
+                            <li class="suggestion-item">Hỗ trợ tài chính của VinUniversity dựa trên nhu cầu hay thành tích, hạn nộp hằng tháng và thời điểm thông báo kết quả là khi nào?</li>
+                            <li class="suggestion-item">Sinh viên đại học được mượn tối đa bao nhiêu sách, trong bao lâu, và chỉ được gia hạn khi đáp ứng những điều kiện nào?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input bar -->
+            <footer class="chat-footer">
+                <form id="chat-form" class="chat-form">
+                    <input type="text" id="query-input" placeholder="Nhập câu hỏi của bạn tại đây..." autocomplete="off" required>
+                    <button type="submit" class="btn-primary" id="send-btn">Gửi</button>
+                </form>
+            </footer>
+        </main>
+
+        <!-- Inspection Panel -->
+        <section class="inspection-panel">
+            <header class="panel-header">
+                <h3>Chi tiết truy xuất (Retrieval Inspector)</h3>
+            </header>
+            <div class="panel-body">
+                <div class="metadata-info">
+                    <div class="meta-card">
+                        <span class="meta-label">Tổng số chunks:</span>
+                        <span id="chunks-count" class="meta-value">-</span>
+                    </div>
+                    <div class="meta-card">
+                        <span class="meta-label">Thời gian truy xuất:</span>
+                        <span id="retrieval-time" class="meta-value">-</span>
+                    </div>
+                </div>
+
+                <div class="retrieved-chunks-section">
+                    <h4>Top-3 Chunks tìm thấy</h4>
+                    <div id="retrieved-chunks-list" class="chunks-list">
+                        <p class="empty-text">Chưa thực hiện truy vấn nào. Hãy gửi câu hỏi để xem chi tiết các đoạn văn bản được vector store lọc ra.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
