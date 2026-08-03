@@ -4,6 +4,7 @@ import json
 import urllib.parse
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
+from datetime import date, datetime
 
 from dotenv import load_dotenv
 load_dotenv(override=False)
@@ -63,6 +64,18 @@ for key, (chunker, label) in chunker_configs.items():
         print(f"  -> Built store with {stores[key].get_collection_size()} chunks.")
     except Exception as e:
         print(f"Failed to ingest for {key}: {e}")
+
+# Custom JSON encoder to handle date objects
+class DateTimeEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, (date, datetime)):
+            return obj.isoformat()
+        return super().default(obj)
+
+
+def json_dumps(data):
+    return json.dumps(data, cls=DateTimeEncoder)
+
 
 # Smart fallback QA model to generate high-quality responses from context
 def generate_llm_response(query, results):
@@ -164,7 +177,7 @@ class RAGDemoHandler(BaseHTTPRequestHandler):
             response = {
                 "chunks_count": store.get_collection_size() if store else 0
             }
-            self.wfile.write(json.dumps(response).encode("utf-8"))
+            self.wfile.write(json_dumps(response).encode("utf-8"))
             return
 
         # Serve Web UI files
@@ -231,7 +244,7 @@ class RAGDemoHandler(BaseHTTPRequestHandler):
                 "chunks": results,
                 "total_chunks": store.get_collection_size()
             }
-            self.wfile.write(json.dumps(response).encode("utf-8"))
+            self.wfile.write(json_dumps(response).encode("utf-8"))
         else:
             self.send_error(404, "API Endpoint Not Found")
 
