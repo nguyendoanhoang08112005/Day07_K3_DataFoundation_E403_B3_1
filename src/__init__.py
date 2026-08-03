@@ -17,7 +17,7 @@ from .embeddings import (
 )
 from .models import Document
 from .store import EmbeddingStore
-
+from .strategies import HeadingSectionChunker
 __all__ = [
     "Document",
     "FixedSizeChunker",
@@ -34,4 +34,5 @@ __all__ = [
     "LOCAL_EMBEDDING_MODEL",
     "OPENAI_EMBEDDING_MODEL",
     "EMBEDDING_PROVIDER_ENV",
+    "HeadingSectionChunker",
 ]
