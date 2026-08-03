@@ -99,11 +99,20 @@ Chạy `ChunkingStrategyComparator().compare()` trên 2-3 tài liệu:
 
 | # | Câu hỏi (Query) | Câu trả lời chuẩn (Gold Answer) | Chunk nào chứa thông tin? |
 |---|-------|-------------------------------|--------------------------|
-| 1 | | | |
-| 2 | | | |
-| 3 | | | |
-| 4 | | | |
-| 5 | | | |
+| 1 | Khi đăng ký môn trên SIS, trạng thái nào xác nhận đăng ký thành công, và hệ thống xử lý thế nào nếu sinh viên chưa đủ điều kiện tiên quyết hoặc chọn hai môn trùng lịch? | Đăng ký chỉ thành công khi môn có trạng thái **“Registered”**; trạng thái **“Selected”** nghĩa là chưa đăng ký thành công. SIS tự động chặn đăng ký nếu sinh viên không đáp ứng điều kiện tiên quyết và không cho phép đăng ký các môn có thời gian trùng nhau. | `vinuni-course-registration` — “Bước 4: Thêm vào giỏ và đăng ký”, “Điều kiện tiên quyết”, “Môn học trùng lịch” |
+| 2 | Học bổng theo thành tích của VinUniversity dành cho đối tượng nào và bốn loại học bổng chính có mức hỗ trợ ra sao? **Bắt buộc lọc `audience: student`.** | Học bổng dành cho thí sinh có thành tích học tập xuất sắc và phẩm chất cá nhân nổi bật. Bốn loại chính gồm: **President's Excellence Scholarship:** 100% học phí và chi phí sinh hoạt; **Provost's Merit Scholarship:** 90%–100% học phí; **Dean's Distinction Scholarship:** 80% học phí; **Discipline's Honor Scholarship:** 50%, 60% hoặc 70% tùy chương trình. | `vinuni-scholarships` — “Học bổng theo thành tích (Merit-based Scholarship)”, “Các loại học bổng chính” |
+| 3 | Hỗ trợ tài chính của VinUniversity dựa trên nhu cầu hay thành tích, hạn nộp hằng tháng và thời điểm thông báo kết quả là khi nào? Hồ sơ nộp muộn được xử lý ra sao? | Hỗ trợ tài chính là chương trình **dựa trên nhu cầu (need-based)**, không phải học bổng dựa trên thành tích. Hồ sơ phải nộp trước **23:59 ngày 15 hằng tháng** và kết quả được thông báo vào **ngày 15 tháng tiếp theo**; hồ sơ nộp sau hạn được chuyển sang chu kỳ xét duyệt tiếp theo. | `vinuni-financial-aid` — “Tổng quan”, “Thời gian xét duyệt”, “Lưu ý quan trọng” |
+| 4 | Sinh viên đại học được mượn tối đa bao nhiêu sách, trong bao lâu, và chỉ được gia hạn khi đáp ứng những điều kiện nào? | Sinh viên đại học được mượn tối đa **3 cuốn trong 2 tuần** và gia hạn **1 lần**. Thời gian gia hạn bằng một nửa thời gian mượn ban đầu; tài liệu phải chưa quá hạn và không có người khác yêu cầu mượn. | `vinuni-library-borrowing-privileges` — “Đặc quyền mượn sách theo nhóm người dùng”, “Quy định gia hạn”; `vinuni-library-borrow-return-renew` — “Điều kiện gia hạn” |
+| 5 | Phí KTX hằng tháng cho phòng 4–8 người, phòng 2 người và KTX ngoài khuôn viên là bao nhiêu? Sinh viên phải đặt cọc bao nhiêu? | Mức phí lần lượt là **3.200.000 VND/tháng/sinh viên** cho phòng 4–8 người, **4.000.000 VND/tháng/sinh viên** cho phòng 2 người và **4.500.000 VND/tháng/sinh viên** cho KTX ngoài khuôn viên. Tiền đặt cọc bằng **1 tháng tiền thuê** và được thanh toán cùng phí KTX. | `vinuni-dormitory-fees` — “Phí KTX trong khuôn viên”, “Phí KTX ngoài khuôn viên”, “Tiền đặt cọc (Security Deposit)” |
+
+**Cấu hình benchmark bắt buộc cho câu 2:**
+
+```python
+metadata_filter = {"audience": "student"}
+results = store.search_with_filter(query_2, top_k=3, metadata_filter=metadata_filter)
+```
+
+Câu 2 được dùng để so sánh trực tiếp `search()` với `search_with_filter()`. Kết quả lọc hợp lệ khi mọi chunk trả về đều có `metadata["audience"] == "student"`; các câu còn lại chạy không lọc để giữ độ bao phủ của bộ tài liệu.
 
 ### Tổng hợp chất lượng truy xuất của nhóm
 
