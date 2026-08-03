@@ -184,3 +184,59 @@ class ChunkingStrategyComparator:
             "recursive": _stats(rec_chunks)
         }
 
+
+class CustomChunker:
+    def __init__(self, chunk_size: int = 500) -> None:
+        self.chunk_size = chunk_size
+
+    def chunk(self, text: str) -> list[str]:
+        if not text:
+            return []
+        lines = text.splitlines()
+        sections = []
+        current_header = ""
+        current_section_lines = []
+        for line in lines:
+            if line.strip().startswith("#"):
+                if current_section_lines:
+                    sections.append((current_header, "\n".join(current_section_lines)))
+                current_header = line.strip()
+                current_section_lines = [line]
+            else:
+                current_section_lines.append(line)
+        if current_section_lines:
+            sections.append((current_header, "\n".join(current_section_lines)))
+            
+        chunks = []
+        for header, content in sections:
+            content = content.strip()
+            if not content:
+                continue
+            if len(content) <= self.chunk_size:
+                chunks.append(content)
+            else:
+                paragraphs = content.split("\n\n")
+                current_chunk = []
+                current_len = 0
+                for para in paragraphs:
+                    para = para.strip()
+                    if not para:
+                        continue
+                    if len(para) > self.chunk_size:
+                        if current_chunk:
+                            chunks.append("\n\n".join(current_chunk))
+                            current_chunk = []
+                            current_len = 0
+                        chunks.append(para)
+                    elif current_len + len(para) + 2 <= self.chunk_size:
+                        current_chunk.append(para)
+                        current_len += len(para) + 2
+                    else:
+                        if current_chunk:
+                            chunks.append("\n\n".join(current_chunk))
+                        current_chunk = [para]
+                        current_len = len(para)
+                if current_chunk:
+                    chunks.append("\n\n".join(current_chunk))
+        return chunks
+
