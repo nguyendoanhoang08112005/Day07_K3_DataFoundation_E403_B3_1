@@ -52,7 +52,7 @@ class SentenceChunker:
 
         # Split text into sentences using regex for sentence boundaries
         # Sentences end with ". ", "! ", "? ", or ".\n"
-        sentences = re.split(r'(?<=[.!?])\s*(?=[A-Z])|\.\n', text)
+        sentences = re.split(r"(?<=[.!?])\s*(?=[A-Z])|\.\n", text)
 
         # Filter out empty sentences and clean up whitespace
         sentences = [s.strip() for s in sentences if s.strip()]
@@ -63,7 +63,7 @@ class SentenceChunker:
         # Group sentences into chunks
         chunks: list[str] = []
         for i in range(0, len(sentences), self.max_sentences_per_chunk):
-            chunk = " ".join(sentences[i:i + self.max_sentences_per_chunk])
+            chunk = " ".join(sentences[i : i + self.max_sentences_per_chunk])
             if chunk.strip():
                 chunks.append(chunk.strip())
 
@@ -80,8 +80,12 @@ class RecursiveChunker:
 
     DEFAULT_SEPARATORS = ["\n\n", "\n", ". ", " ", ""]
 
-    def __init__(self, separators: list[str] | None = None, chunk_size: int = 500) -> None:
-        self.separators = self.DEFAULT_SEPARATORS if separators is None else list(separators)
+    def __init__(
+        self, separators: list[str] | None = None, chunk_size: int = 500
+    ) -> None:
+        self.separators = (
+            self.DEFAULT_SEPARATORS if separators is None else list(separators)
+        )
         self.chunk_size = chunk_size
 
     def chunk(self, text: str) -> list[str]:
@@ -142,7 +146,11 @@ class RecursiveChunker:
             result_chunks.append(current_chunk)
 
         # If we only got one chunk that's too big, try next separator
-        if len(result_chunks) == 1 and len(result_chunks[0]) > self.chunk_size and next_separators:
+        if (
+            len(result_chunks) == 1
+            and len(result_chunks[0]) > self.chunk_size
+            and next_separators
+        ):
             return self._split(current_text, next_separators)
 
         return result_chunks
@@ -179,28 +187,40 @@ class ChunkingStrategyComparator:
         # Fixed size chunking
         fixed_chunker = FixedSizeChunker(chunk_size=chunk_size, overlap=50)
         fixed_chunks = fixed_chunker.chunk(text)
-        results['fixed_size'] = {
-            'count': len(fixed_chunks),
-            'avg_length': sum(len(c) for c in fixed_chunks) / len(fixed_chunks) if fixed_chunks else 0,
-            'chunks': fixed_chunks
+        results["fixed_size"] = {
+            "count": len(fixed_chunks),
+            "avg_length": (
+                sum(len(c) for c in fixed_chunks) / len(fixed_chunks)
+                if fixed_chunks
+                else 0
+            ),
+            "chunks": fixed_chunks,
         }
 
         # Sentence-based chunking
         sentence_chunker = SentenceChunker(max_sentences_per_chunk=3)
         sentence_chunks = sentence_chunker.chunk(text)
-        results['by_sentences'] = {
-            'count': len(sentence_chunks),
-            'avg_length': sum(len(c) for c in sentence_chunks) / len(sentence_chunks) if sentence_chunks else 0,
-            'chunks': sentence_chunks
+        results["by_sentences"] = {
+            "count": len(sentence_chunks),
+            "avg_length": (
+                sum(len(c) for c in sentence_chunks) / len(sentence_chunks)
+                if sentence_chunks
+                else 0
+            ),
+            "chunks": sentence_chunks,
         }
 
         # Recursive chunking
         recursive_chunker = RecursiveChunker(chunk_size=chunk_size)
         recursive_chunks = recursive_chunker.chunk(text)
-        results['recursive'] = {
-            'count': len(recursive_chunks),
-            'avg_length': sum(len(c) for c in recursive_chunks) / len(recursive_chunks) if recursive_chunks else 0,
-            'chunks': recursive_chunks
+        results["recursive"] = {
+            "count": len(recursive_chunks),
+            "avg_length": (
+                sum(len(c) for c in recursive_chunks) / len(recursive_chunks)
+                if recursive_chunks
+                else 0
+            ),
+            "chunks": recursive_chunks,
         }
 
         return results
