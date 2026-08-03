@@ -28,9 +28,9 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Callable
 
-from Day07_K3_DataFoundation_E403_B3_1.src.dqtrungno1.chunking import FixedSizeChunker
-from Day07_K3_DataFoundation_E403_B3_1.src.dinhquoctrung_01687.models import Document
-from Day07_K3_DataFoundation_E403_B3_1.src.dqtrungno1.store import EmbeddingStore
+from src.chunking import FixedSizeChunker
+from src.models import Document
+from src.store import EmbeddingStore
 
 TEXT_EXTENSIONS = {".md", ".txt"}
 

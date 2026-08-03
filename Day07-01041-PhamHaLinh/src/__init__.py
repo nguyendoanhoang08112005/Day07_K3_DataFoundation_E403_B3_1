@@ -1,13 +1,12 @@
-from .dqtrungno1.agent import KnowledgeBaseAgent
-from .dqtrungno1.chunking import (
+from .agent import KnowledgeBaseAgent
+from .chunking import (
     ChunkingStrategyComparator,
     FixedSizeChunker,
     RecursiveChunker,
     SentenceChunker,
     compute_similarity,
-    CustomChunker,
 )
-from .dqtrungno1.embeddings import (
+from .embeddings import (
     EMBEDDING_PROVIDER_ENV,
     LOCAL_EMBEDDING_MODEL,
     OPENAI_EMBEDDING_MODEL,
@@ -17,8 +16,8 @@ from .dqtrungno1.embeddings import (
     _mock_embed,
 )
 from .models import Document
-from .dqtrungno1.store import EmbeddingStore
-from .dqtrungno1.strategies import HeadingSectionChunker
+from .store import EmbeddingStore
+
 __all__ = [
     "Document",
     "FixedSizeChunker",
@@ -35,9 +34,4 @@ __all__ = [
     "LOCAL_EMBEDDING_MODEL",
     "OPENAI_EMBEDDING_MODEL",
     "EMBEDDING_PROVIDER_ENV",
-<<<<<<<< HEAD:src/dinhquoctrung01687/__init__.py
-    "HeadingSectionChunker",
-========
-    "CustomChunker",
->>>>>>>> cceedb0e845e62f974640e1ce353489c863cf23b:src/TranChiTam_01535/__init__.py
 ]
