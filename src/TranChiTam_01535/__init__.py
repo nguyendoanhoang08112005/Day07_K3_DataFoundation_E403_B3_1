@@ -5,6 +5,7 @@ from .dqtrungno1.chunking import (
     RecursiveChunker,
     SentenceChunker,
     compute_similarity,
+    CustomChunker,
 )
 from .dqtrungno1.embeddings import (
     EMBEDDING_PROVIDER_ENV,
@@ -34,5 +35,9 @@ __all__ = [
     "LOCAL_EMBEDDING_MODEL",
     "OPENAI_EMBEDDING_MODEL",
     "EMBEDDING_PROVIDER_ENV",
+<<<<<<<< HEAD:src/dinhquoctrung01687/__init__.py
     "HeadingSectionChunker",
+========
+    "CustomChunker",
+>>>>>>>> cceedb0e845e62f974640e1ce353489c863cf23b:src/TranChiTam_01535/__init__.py
 ]

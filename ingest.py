@@ -29,7 +29,7 @@ from pathlib import Path
 from typing import Callable
 
 from Day07_K3_DataFoundation_E403_B3_1.src.dqtrungno1.chunking import FixedSizeChunker
-from Day07_K3_DataFoundation_E403_B3_1.src.dinhquoctrung01687.models import Document
+from Day07_K3_DataFoundation_E403_B3_1.src.dinhquoctrung_01687.models import Document
 from Day07_K3_DataFoundation_E403_B3_1.src.dqtrungno1.store import EmbeddingStore
 
 TEXT_EXTENSIONS = {".md", ".txt"}
